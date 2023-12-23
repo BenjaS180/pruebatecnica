@@ -1,0 +1,10 @@
+SELECT p.Name, p.Ean, p.SKU, m.Name AS Market
+FROM product p
+INNER JOIN (
+    SELECT SKU, MIN(discount_price) AS min_price
+    FROM Price
+    WHERE active = 1
+    GROUP BY SKU
+) AS min_prices ON p.SKU = min_prices.SKU
+INNER JOIN Price pr ON p.SKU = pr.SKU AND min_prices.min_price = pr.discount_price
+INNER JOIN market m ON p.SKU = m.SKU;
